@@ -1445,6 +1445,13 @@ function set_java_home() {
     fi
 }
 
+function repopick() {
+    set_stuff_for_environment
+    T=$(gettop)
+    $T/build/tools/repopick.py $@
+}
+
+
 # Print colored exit condition
 function pez {
     "$@"
