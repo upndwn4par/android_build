@@ -23,7 +23,6 @@ PRODUCT_PACKAGES += \
     BasicDreams \
     Browser \
     Calculator \
-    Calendar \
     CalendarProvider \
     CaptivePortalLogin \
     CertInstaller \
@@ -39,7 +38,7 @@ PRODUCT_PACKAGES += \
     KeyChain \
     Keyguard \
     LatinIME \
-    Launcher2 \
+    Launcher3 \
     ManagedProvisioning \
     PicoTts \
     PacProcessor \
