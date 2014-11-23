@@ -573,9 +573,12 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.Print("Installing Lollipop Dream")
     script.Print("  by upndwn4par")
     script.Print(" ")
-    script.Print("Formatting system...")
+    script.Print("Running addon.d backup...")
     script.Mount("/system")
+    script.RunBackup("backup")
     script.Unmount("/system")
+    script.Print(" ")
+    script.Print("Formatting system...")
     script.FormatPartition("/system")
     script.Mount("/system", recovery_mount_options)
     script.Print(" ")
@@ -583,7 +586,9 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     if not has_recovery_patch:
       script.UnpackPackageDir("recovery", "/system")
     script.UnpackPackageDir("system", "/system")
-
+    script.Print(" ")
+    script.Print("Running addon.d restore...")
+    script.RunBackup("restore")
     script.Print(" ")
     script.Print("Creating symlinks...")
     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
@@ -1461,6 +1466,7 @@ def main(argv):
                                               "oem_settings=",
                                               "verify",
                                               "no_fallback_to_full",
+                                              "backup=",
                                               ],
                              extra_option_handler=option_handler)
 
