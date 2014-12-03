@@ -544,6 +544,21 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   device_specific.FullOTA_InstallBegin()
 
+
+  script.Print(" ")
+  script.Print("Installing Lollipop Dream")
+  script.Print("  by upndwn4par")
+  script.Print(" ")
+  script.Print("Running addon.d backup...")
+  if block_based:
+      common.ZipWriteStr(output_zip, "system/bin/backuptool.sh",
+		  ""+input_zip.read("SYSTEM/bin/backuptool.sh"))
+      common.ZipWriteStr(output_zip, "system/bin/backuptool.functions",
+		  ""+input_zip.read("SYSTEM/bin/backuptool.functions"))
+      script.Mount("/system")
+      script.RunBackup("backup")
+      script.Unmount("/system")
+
   system_progress = 0.75
 
   if OPTIONS.wipe_user_data:
@@ -564,6 +579,8 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     # to the entire partition, but lets us reuse the updater code that
     # writes incrementals to do it.
 
+    script.Print(" ")
+    script.Print("Writing System image...")
     system_tgt = GetImage("system", OPTIONS.input_tmp, OPTIONS.info_dict)
     system_tgt.ResetFileMap()
     system_diff = common.BlockDifference("system", system_tgt, src=None)
@@ -586,10 +603,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     if not has_recovery_patch:
       script.UnpackPackageDir("recovery", "/system")
     script.UnpackPackageDir("system", "/system")
-    script.Print(" ")
-    script.Print("Running addon.d restore...")
-    script.RunBackup("restore")
-    script.Print(" ")
     script.Print("Creating symlinks...")
     symlinks = CopyPartitionFiles(system_items, input_zip, output_zip)
     script.MakeSymlinks(symlinks)
@@ -637,13 +650,18 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print(" ")
   script.Print("Writing boot image...")
   script.WriteRawImage("/boot", "boot.img")
-
+  script.Print(" ")
+  script.Print("Running addon.d restore...")
+  script.Mount("/system")
+  script.RunBackup("restore")
+  script.Unmount("/system")
   script.ShowProgress(0.2, 10)
   script.Print(" ")
   script.Print("Install complete");
   script.Print(" ")
   script.Print("Enjoy!");
   script.Print(" ")
+
   device_specific.FullOTA_InstallEnd()
 
   if OPTIONS.extra_script is not None:
